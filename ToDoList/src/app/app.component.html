@@ -1,7 +1,7 @@
 <app-template-header></app-template-header>
 <div class="list-view">
-  <h4>ToDo<span>(2)</span></h4>
-  <div class="todo-elements">
+  <h4 (click)="toDoShow = !toDoShow">ToDo<span>(2)</span></h4>
+  <div *ngIf="toDoShow" class="todo-elements">
     <app-template-todo></app-template-todo>
     <app-template-todo></app-template-todo>
     <app-template-todo></app-template-todo>
@@ -9,6 +9,6 @@
     <app-template-todo></app-template-todo>
   </div>
   <app-template-todo-form></app-template-todo-form>
-  <h4>Done<span>(4)</span></h4>
-  <div class="todo-elements"></div>
+  <h4 (click)="toDoShow = !toDoShow">Done<span>(4)</span></h4>
+  <div *ngIf="toDoShow" class="todo-elements"></div>
 </div>
