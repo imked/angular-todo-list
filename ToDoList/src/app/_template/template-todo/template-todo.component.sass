@@ -1,0 +1,74 @@
+@import '../../../sass/_var.sass'
+
+.todo
+  width: 100%
+  background-color: $white
+  margin: 0 0 $cube 0
+  display: flex
+  flex-flow: row
+  justify-content: space-between
+  align-items: stretch
+  height: 100%
+  .todo-content
+    width: 100%
+    display: flex
+    flex-flow: row
+    justify-content: flex-start
+    align-items: center
+    .handle
+      background-color: $prime
+      height: 100%
+      display: flex
+      flex-flow: row
+      padding: 0 $cube 0 $cube
+      justify-content: center
+      align-items: center
+      cursor: grab
+      i
+        font-size: $cube*2
+    .todo-content-check
+      display: flex
+      margin: $cube*2
+      flex-flow: row
+      justify-content: center
+      align-items: center
+      cursor: pointer
+      i
+        font-size: $cube*2
+    .todo-content-title
+      width: 100%
+      input
+        font-family: $font2
+        font-size: $cube*2
+        padding: $cube*2
+        color: $second
+        width: 100%
+        border: none
+        word-break: break-word
+      input::placeholder
+        opacity: 0.5
+        font-style: italic
+      input:focus
+        outline: none
+  .delete
+    padding: $cube*2
+    cursor: pointer
+    i
+      font-size: $cube*2
+      display: flex
+      flex-flow: row
+      justify-content: center
+      align-items: center
+.todo.done
+  .todo-content
+    .handle
+      display: none
+    .todo-content-title
+      input
+        opacity: 0.3
+        text-decoration: line-through
+
+
+
+
+
