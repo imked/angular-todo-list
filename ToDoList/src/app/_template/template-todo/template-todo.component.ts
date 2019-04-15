@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { Todo } from '../../_interface/todo';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { ToDo } from '../../_interface/todo';
+import { EventPing } from '../../_interface/eventping';
 
 @Component({
   selector: 'app-template-todo',
@@ -7,20 +8,26 @@ import { Todo } from '../../_interface/todo';
   styleUrls: ['./template-todo.component.sass'],
 })
 export class TemplateTodoComponent implements OnInit {
-  public toDo$: Todo;
+  @Input() toDo$: ToDo;
+  @Output() ping: EventEmitter<any> = new EventEmitter<any>();
 
-  constructor() {
-    this.toDo$ = {
-      id: 1,
-      label: 'ToDo',
-      status: false,
-      position: 1,
-    };
-  }
+  constructor() {}
 
   ngOnInit() {}
 
   public changeCheck(event?: any): void {
     this.toDo$.status = !this.toDo$.status;
+    const eventObject: EventPing = { label: 'check', object: this.toDo$ };
+    this.ping.emit(eventObject);
+  }
+
+  public changeLabel(event?: any): void {
+    const eventObject: EventPing = { label: 'label', object: this.toDo$ };
+    this.ping.emit(eventObject);
+  }
+
+  public deleteToDo(event?: any): void {
+    const eventObject: EventPing = { label: 'delete', object: this.toDo$ };
+    this.ping.emit(eventObject);
   }
 }

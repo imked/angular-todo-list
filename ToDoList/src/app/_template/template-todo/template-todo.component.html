@@ -16,10 +16,15 @@
       ></i>
     </div>
     <div class="todo-content-title">
-      <input type="text" placeholder="name of list item" />
+      <input
+        (blur)="changeLabel($event)"
+        type="text"
+        [(ngModel)]="toDo$.label"
+        placeholder="name of list item"
+      />
     </div>
   </div>
-  <div class="delete">
+  <div class="delete" (click)="deleteToDo($event)">
     <i class="far fa-trash-alt"></i>
   </div>
 </div>
