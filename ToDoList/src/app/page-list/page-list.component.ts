@@ -1,30 +1,70 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ToDo } from '../_interface/todo';
 import { EventPing } from '../_interface/eventping';
 import { DataService } from '../_service/data.service';
 import { Subscription } from 'rxjs';
-import { ConsoleReporter } from 'jasmine';
+import { DragulaService } from 'ng2-dragula';
 
 @Component({
   selector: 'app-page-list',
   templateUrl: './page-list.component.html',
   styleUrls: ['./page-list.component.sass'],
 })
-export class PageListComponent implements OnInit {
+export class PageListComponent implements OnInit, OnDestroy {
   public toDoShow: boolean;
   public toDoDoneShow: boolean;
   public $todos: ToDo[];
   public $todosdone: ToDo[];
+  public subs = new Subscription();
 
-  constructor(public _dataService: DataService) {
+  constructor(
+    public _dataService: DataService,
+    public _dragulaService: DragulaService
+  ) {
     this.toDoShow = true;
     this.toDoDoneShow = false;
     this.$todos = [];
     this.$todosdone = [];
     this.loadData();
+
+    this._dragulaService.createGroup('todos', {
+      removeOnSpill: false,
+    });
+
+    this.subs.add(
+      _dragulaService.drop('todos').subscribe(({ el }) => {
+        this.position();
+      })
+    );
   }
 
   ngOnInit() {}
+
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+  }
+
+  public position(): void {
+    let position = 0;
+    this.$todos.forEach((todo: ToDo) => {
+      position += 1;
+      todo.position = position;
+      this._dataService.putToDo(todo).subscribe(
+        (data: ToDo) => {
+          console.log(
+            `%cSUC: ${data.label} wurde neu positioniert`,
+            `color: green; font-size: 12px;`
+          );
+        },
+        error => {
+          console.log(
+            `%cERROR: ${error.message}`,
+            `color: red; font-size: 12px;`
+          );
+        }
+      );
+    });
+  }
 
   public loadData(): void {
     this.$todosdone = [];
@@ -37,6 +77,9 @@ export class PageListComponent implements OnInit {
           } else {
             this.$todos.push(toDo);
           }
+        });
+        this.$todos.sort((obj1, obj2) => {
+          return obj1.position - obj2.position;
         });
       },
       error => {
@@ -54,6 +97,7 @@ export class PageListComponent implements OnInit {
           `color:red; font-size: 12px;`
         );
         this.$todos.push(data);
+        this.position();
       },
       error => {
         console.log(
