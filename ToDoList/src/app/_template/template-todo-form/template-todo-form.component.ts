@@ -1,6 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { ToDo } from '../../_interface/todo';
-import EventPing from '../../_interface/eventping';
 
 @Component({
   selector: 'app-template-todo-form',

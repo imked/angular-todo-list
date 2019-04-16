@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ToDo } from '../_interface/todo';
 import { EventPing } from '../_interface/eventping';
+import { DataService } from '../_service/data.service';
+import { Subscription } from 'rxjs';
+import { ConsoleReporter } from 'jasmine';
 
 @Component({
   selector: 'app-page-list',
@@ -13,25 +16,52 @@ export class PageListComponent implements OnInit {
   public $todos: ToDo[];
   public $todosdone: ToDo[];
 
-  constructor() {
+  constructor(public _dataService: DataService) {
     this.toDoShow = true;
     this.toDoDoneShow = false;
-    this.$todos = [
-      {
-        id: 0,
-        label: 'test',
-        status: false,
-        position: 1,
-      },
-    ];
+    this.$todos = [];
     this.$todosdone = [];
+    this.loadData();
   }
 
   ngOnInit() {}
 
+  public loadData(): void {
+    this.$todosdone = [];
+    this.$todos = [];
+    this._dataService.getToDo().subscribe(
+      (data: ToDo[]) => {
+        data.forEach((toDo: ToDo) => {
+          if (toDo.status === true) {
+            this.$todosdone.push(toDo);
+          } else {
+            this.$todos.push(toDo);
+          }
+        });
+      },
+      error => {
+        console.log(`%cERROR: $(error.message)`, `color: red; font-size: 12px`);
+      }
+    );
+  }
+
   public create(event: ToDo): void {
     event.position = this.$todos.length + 1;
-    this.$todos.push(event);
+    this._dataService.postToDo(event).subscribe(
+      (data: ToDo) => {
+        console.log(
+          `%cSUC: "${data.label}" wurde erfolgreich erstellt.`,
+          `color:red; font-size: 12px;`
+        );
+        this.$todos.push(data);
+      },
+      error => {
+        console.log(
+          `%cERROR: ${error.message}`,
+          `color: read; font-size: 12px;`
+        );
+      }
+    );
   }
 
   public update(event: EventPing): void {
